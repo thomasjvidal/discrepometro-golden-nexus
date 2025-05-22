@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,35 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				golden: {
+					50: '#fffef7',
+					100: '#fffbeb',
+					200: '#fef3c7',
+					300: '#fde68a',
+					400: '#fcd34d',
+					500: '#FFD700',
+					600: '#d97706',
+					700: '#b45309',
+					800: '#92400e',
+					900: '#78350f',
+				},
+				dark: {
+					50: '#f8f9fa',
+					100: '#f1f3f4',
+					200: '#e8eaed',
+					300: '#dadce0',
+					400: '#bdc1c6',
+					500: '#9aa0a6',
+					600: '#80868b',
+					700: '#5f6368',
+					800: '#3c4043',
+					900: '#202124',
+					950: '#151618',
 				}
+			},
+			fontFamily: {
+				'sans': ['Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +113,34 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					from: {
+						opacity: '0',
+						transform: 'translateY(10px)'
+					},
+					to: {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
+				},
+				'pulse-golden': {
+					'0%, 100%': {
+						boxShadow: '0 0 0 0 rgba(255, 215, 0, 0.4)'
+					},
+					'50%': {
+						boxShadow: '0 0 0 10px rgba(255, 215, 0, 0)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.5s ease-out',
+				'pulse-golden': 'pulse-golden 2s infinite'
+			},
+			backdropBlur: {
+				xs: '2px',
 			}
 		}
 	},
