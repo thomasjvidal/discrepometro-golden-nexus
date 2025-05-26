@@ -11,6 +11,7 @@ export type Database = {
     Tables: {
       analise_discrepancia: {
         Row: {
+          chunk_id: number | null
           codigo_produto: string | null
           created_at: string
           empresa_id: string | null
@@ -18,6 +19,8 @@ export type Database = {
           estoque_inicial_2021: number
           fonte: string | null
           id: string
+          job_id: string | null
+          linha_origem: number | null
           produto: string
           tipo_discrepancia: string | null
           total_entradas: number
@@ -25,6 +28,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          chunk_id?: number | null
           codigo_produto?: string | null
           created_at?: string
           empresa_id?: string | null
@@ -32,6 +36,8 @@ export type Database = {
           estoque_inicial_2021?: number
           fonte?: string | null
           id?: string
+          job_id?: string | null
+          linha_origem?: number | null
           produto: string
           tipo_discrepancia?: string | null
           total_entradas?: number
@@ -39,6 +45,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          chunk_id?: number | null
           codigo_produto?: string | null
           created_at?: string
           empresa_id?: string | null
@@ -46,6 +53,8 @@ export type Database = {
           estoque_inicial_2021?: number
           fonte?: string | null
           id?: string
+          job_id?: string | null
+          linha_origem?: number | null
           produto?: string
           tipo_discrepancia?: string | null
           total_entradas?: number
@@ -60,7 +69,91 @@ export type Database = {
             referencedRelation: "empresas"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "analise_discrepancia_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "processing_jobs"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      cfop_metrics: {
+        Row: {
+          cfop: string
+          created_at: string
+          id: string
+          user_id: string
+          valor: number
+        }
+        Insert: {
+          cfop: string
+          created_at?: string
+          id?: string
+          user_id: string
+          valor: number
+        }
+        Update: {
+          cfop?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          valor?: number
+        }
+        Relationships: []
+      }
+      discrepancies: {
+        Row: {
+          created_at: string | null
+          detalhe: string | null
+          entry_id: string | null
+          id: string
+          tipo: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          detalhe?: string | null
+          entry_id?: string | null
+          id?: string
+          tipo?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          detalhe?: string | null
+          entry_id?: string | null
+          id?: string
+          tipo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discrepancies_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          created_at: string | null
+          file_url: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          file_url?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          file_url?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       empresas: {
         Row: {
@@ -79,6 +172,44 @@ export type Database = {
           nome?: string
         }
         Relationships: []
+      }
+      entries: {
+        Row: {
+          cfop: string | null
+          created_at: string | null
+          document_id: string | null
+          id: string
+          linha: number | null
+          user_id: string | null
+          valor: number | null
+        }
+        Insert: {
+          cfop?: string | null
+          created_at?: string | null
+          document_id?: string | null
+          id?: string
+          linha?: number | null
+          user_id?: string | null
+          valor?: number | null
+        }
+        Update: {
+          cfop?: string | null
+          created_at?: string | null
+          document_id?: string | null
+          id?: string
+          linha?: number | null
+          user_id?: string | null
+          valor?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entries_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       estoque: {
         Row: {
@@ -117,6 +248,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      processing_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          error_message: string | null
+          file_name: string
+          file_size: number
+          file_type: string
+          id: string
+          processed_chunks: number
+          progress: number
+          status: string
+          total_chunks: number
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          file_name: string
+          file_size: number
+          file_type: string
+          id?: string
+          processed_chunks?: number
+          progress?: number
+          status?: string
+          total_chunks?: number
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          file_name?: string
+          file_size?: number
+          file_type?: string
+          id?: string
+          processed_chunks?: number
+          progress?: number
+          status?: string
+          total_chunks?: number
+        }
+        Relationships: []
       }
       transacoes: {
         Row: {

@@ -19,14 +19,69 @@ const Upload = () => {
   const navigate = useNavigate();
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileUpload = (files: File[]) => {
+  const uploadCsvToSupabase = async (file: File) => {
+    setIsUploading(true);
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('user_id', crypto.randomUUID());
+
+      const response = await fetch('https://hvjjcegcdivumprqviug.functions.supabase.co/upload_csv', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2ampjZWdjZGl2dW1wcnF2aXVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2Nzg1MDAsImV4cCI6MjA2MzI1NDUwMH0.nerS1VvC5ebHOyHrtTMwrzdpCkAWpRpfvlvdlSspiG4'
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Erro HTTP: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      toast({
+        title: "CSV processado com sucesso",
+        description: `Arquivo ${file.name} foi enviado e processado.`,
+      });
+
+      console.log('CSV upload result:', result);
+      return result;
+    } catch (error) {
+      console.error('Erro no upload do CSV:', error);
+      toast({
+        title: "Erro no upload do CSV",
+        description: error instanceof Error ? error.message : "Erro desconhecido",
+        variant: "destructive"
+      });
+      throw error;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleFileUpload = async (files: File[]) => {
     const newFiles: UploadedFile[] = files.map(file => ({
       file,
       type: file.type === 'text/csv' ? 'csv' : 'pdf'
     }));
     
     setUploadedFiles(prev => [...prev, ...newFiles]);
+    
+    // Processar arquivos CSV automaticamente
+    for (const fileData of newFiles) {
+      if (fileData.type === 'csv') {
+        try {
+          await uploadCsvToSupabase(fileData.file);
+        } catch (error) {
+          // Erro já tratado na função uploadCsvToSupabase
+        }
+      }
+    }
     
     toast({
       title: "Arquivos carregados",
@@ -144,6 +199,16 @@ const Upload = () => {
             {/* Upload Area */}
             <UploadArea onFileUpload={handleFileUpload} />
 
+            {/* Upload Status */}
+            {isUploading && (
+              <div className="text-center p-4 bg-golden-500/10 rounded-xl border border-golden-500/20">
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-golden-400 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-golden-400">Processando CSV...</span>
+                </div>
+              </div>
+            )}
+
             {/* File Preview */}
             {uploadedFiles.length > 0 && (
               <div className="space-y-4">
@@ -166,7 +231,7 @@ const Upload = () => {
                 onClick={handleAnalyze}
                 size="lg"
                 className="bg-gradient-to-r from-golden-500 to-golden-600 hover:from-golden-600 hover:to-golden-700 text-dark-900 font-semibold px-8 py-3 rounded-xl transition-all duration-300 hover:scale-105 golden-glow"
-                disabled={uploadedFiles.length === 0}
+                disabled={uploadedFiles.length === 0 || isUploading}
               >
                 <UploadIcon className="w-5 h-5 mr-2" />
                 Analisar Arquivos
