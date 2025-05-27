@@ -249,6 +249,36 @@ export type Database = {
           },
         ]
       }
+      inventory_products: {
+        Row: {
+          created_at: string | null
+          id: string
+          page_number: number | null
+          product_code: string | null
+          product_name: string
+          quantity: number
+          year: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          page_number?: number | null
+          product_code?: string | null
+          product_name: string
+          quantity: number
+          year: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          page_number?: number | null
+          product_code?: string | null
+          product_name?: string
+          quantity?: number
+          year?: number
+        }
+        Relationships: []
+      }
       processing_jobs: {
         Row: {
           completed_at: string | null
@@ -349,6 +379,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      transactions: {
+        Row: {
+          cfop: string
+          created_at: string | null
+          date: string
+          id: string
+          product_name: string
+          quantity: number
+          transaction_type: string
+        }
+        Insert: {
+          cfop: string
+          created_at?: string | null
+          date: string
+          id?: string
+          product_name: string
+          quantity: number
+          transaction_type: string
+        }
+        Update: {
+          cfop?: string
+          created_at?: string | null
+          date?: string
+          id?: string
+          product_name?: string
+          quantity?: number
+          transaction_type?: string
+        }
+        Relationships: []
+      }
+      uploads: {
+        Row: {
+          file_size: number | null
+          file_type: string
+          filename: string
+          id: string
+          processed: boolean | null
+          upload_date: string | null
+          year: number | null
+        }
+        Insert: {
+          file_size?: number | null
+          file_type: string
+          filename: string
+          id?: string
+          processed?: boolean | null
+          upload_date?: string | null
+          year?: number | null
+        }
+        Update: {
+          file_size?: number | null
+          file_type?: string
+          filename?: string
+          id?: string
+          processed?: boolean | null
+          upload_date?: string | null
+          year?: number | null
+        }
+        Relationships: []
       }
     }
     Views: {

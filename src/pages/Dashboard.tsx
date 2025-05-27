@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import DiscrepancyTable from '@/components/DiscrepancyTable';
+import CfopTable from '@/components/CfopTable';
 import StatsCard from '@/components/StatsCard';
 import FilterBar from '@/components/FilterBar';
 
@@ -121,6 +122,9 @@ const Dashboard = () => {
             color="golden"
           />
         </div>
+
+        {/* CFOP Metrics Table */}
+        <CfopTable />
 
         {/* Filters and Search */}
         <Card className="glass-effect p-6">
